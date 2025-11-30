@@ -1,0 +1,27 @@
+94. Binary Tree Inorder Traversal
+
+Given the root of a binary tree, return the inorder traversal of its nodes' values.
+
+sol -
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+
+        inorder(root, res);
+        return res;
+
+    }
+    private void inorder(TreeNode node, List<Integer> res) {
+        if (node == null) {
+            return;
+
+
+        }
+        inorder(node.left,res);
+        res.add(node.val);
+        inorder(node.right, res);
+    }
+        
+    
+}

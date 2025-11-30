@@ -1,0 +1,50 @@
+3715. Sum of Perfect Square Ancestors
+
+You are given an integer n and an undirected tree rooted at node 0 with n nodes numbered from 0 to n - 1. This is represented by a 2D array edges of length n - 1, where edges[i] = [ui, vi] indicates an undirected edge between nodes ui and vi.
+
+You are also given an integer array nums, where nums[i] is the positive integer assigned to node i.
+
+Define a value ti as the number of ancestors of node i such that the product nums[i] * nums[ancestor] is a perfect square.
+
+Return the sum of all ti values for all nodes i in range [1, n - 1].
+
+Note:
+
+In a rooted tree, the ancestors of node i are all nodes on the path from node i to the root node 0, excluding i itself.
+
+sol - 
+
+class Solution {
+    public long sumOfAncestors(int n, int[][] edges, int[] nums) {
+        ArrayList<ArrayList<Integer>> l = new ArrayList<>();
+        for (int i = 0; i < n; i++) l.add(new ArrayList<>());
+        for (int[] e : edges) l.get(e[0]).add(e[1]);
+
+        // Convert each number to its square-free form
+        for (int i = 0; i < n; i++) {
+            int x = nums[i], val = 1;
+            for (int j = 2; j * j <= x; j++) {
+                int oddCount = 0;
+                while (x % j == 0) {
+                    x /= j;
+                    oddCount++;
+                }
+                if (oddCount % 2 == 1) val *= j;
+            }
+            if (x > 1) val *= x;
+            nums[i] = val;
+        }
+
+        return dfs(0, l, new HashMap<>(), nums);
+    }
+
+    private long dfs(int st, ArrayList<ArrayList<Integer>> l, HashMap<Integer, Long> ans, int[] nums) {
+        long res = ans.getOrDefault(nums[st], 0L);
+
+        ans.put(nums[st], ans.getOrDefault(nums[st], 0L) + 1);
+        for (int child : l.get(st)) res += dfs(child, l, ans, nums);
+        ans.put(nums[st], ans.get(nums[st]) - 1);
+
+        return res;
+    }
+}
